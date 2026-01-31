@@ -3,191 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moonlit Shrine Scene</title>
+    <title>Sacred Sakura Shrine</title>
     <style>
         :root {
-            --bg-dark: #02060a;
-            --sky-glow: #1a3a5f;
-            --moon-light: #fdfdfd;
-            --magic-cyan: #b3ffff;
-            --torii-red: #6e1a1a;
+            --bg-deep: #050a14;
+            --magic-glow: #a0fbff;
+            --sakura-pink: #ffb7c5;
+            --lantern-gold: #ffcc33;
+            --stone-grey: #2a2d31;
         }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            font-family: sans-serif;
-        }
+        body { margin: 0; background: #000; overflow: hidden; display: flex; justify-content: center; }
 
-        /* Container with Mobile Aspect Ratio */
-        .scene {
+        .container {
             position: relative;
-            width: 100vw;
-            height: 100vh;
-            max-width: 450px;
-            max-height: 800px;
-            background: radial-gradient(circle at 50% 20%, var(--sky-glow) 0%, var(--bg-dark) 80%);
+            width: 100vw; height: 100vh;
+            max-width: 500px;
+            background: linear-gradient(to bottom, #1a2a44, var(--bg-deep));
             overflow: hidden;
-            border: 2px solid #111;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* The Moon */
+        /* --- BACKGROUND ELEMENTS --- */
         .moon {
-            position: absolute;
-            top: 10%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 100px;
-            background: var(--moon-light);
-            border-radius: 50%;
-            box-shadow: 0 0 40px 10px rgba(255, 255, 255, 0.3),
-                        0 0 100px 20px rgba(179, 255, 255, 0.1);
-            z-index: 1;
+            position: absolute; top: 5%; left: 50%; transform: translateX(-50%);
+            width: 90px; height: 90px; background: #fff; border-radius: 50%;
+            box-shadow: 0 0 50px #fff, 0 0 100px rgba(160, 251, 255, 0.2);
         }
 
-        /* The Torii Gate (SVG) */
-        .torii-container {
-            position: absolute;
-            top: 35%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 180px;
-            z-index: 2;
-            filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));
+        /* Sakura Trees (Simplified silhouettes with pink "blossom" shadows) */
+        .tree {
+            position: absolute; top: 0; width: 60%; height: 70%;
+            background: rgba(0,0,0,0.8); z-index: 1;
+        }
+        .tree.left { left: -20%; clip-path: polygon(0 0, 100% 0, 70% 100%, 0% 100%); }
+        .tree.right { right: -20%; clip-path: polygon(0 0, 100% 0, 100% 100%, 30% 100%); }
+        
+        .sakura-leaf {
+            position: absolute; background: var(--sakura-pink);
+            border-radius: 50% 0 50% 0; opacity: 0.6; filter: blur(1px);
+            animation: fall 10s infinite linear;
         }
 
-        /* The Stone Steps */
-        .steps {
-            position: absolute;
-            top: 55%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 120px;
-            height: 60px;
-            background: linear-gradient(to bottom, #111, #222);
+        /* --- THE ROAD & STAIRS --- */
+        .road-container {
+            position: absolute; bottom: 0; width: 100%; height: 60%;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .stairs {
+            width: 180px; height: 150px;
+            background: repeating-linear-gradient(to bottom, #111 0px, #111 10px, #222 10px, #222 20px);
             clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-            z-index: 2;
+            margin-top: 50px; border-top: 2px solid #333;
         }
 
-        /* The Magic Circle with 3D Perspective */
-        .floor-area {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 40%;
-            perspective: 600px;
-            z-index: 3;
+        .stone-path {
+            width: 100%; height: 200px;
+            background: radial-gradient(circle at 50% 0%, #1a1d22, #050a14);
+            margin-top: -5px;
         }
 
-        .magic-circle {
-            position: absolute;
-            bottom: 50px;
-            left: 50%;
-            width: 300px;
-            height: 300px;
-            margin-left: -150px;
-            transform: rotateX(75deg);
-            border: 2px solid var(--magic-cyan);
-            border-radius: 50%;
-            box-shadow: 0 0 20px var(--magic-cyan), inset 0 0 30px var(--magic-cyan);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            animation: breathe 4s infinite ease-in-out;
+        /* --- PROPS: TORII & LANTERNS --- */
+        .torii {
+            position: absolute; top: 32%; left: 50%; transform: translateX(-50%);
+            width: 160px; z-index: 3;
         }
 
-        .inner-geometry {
-            width: 80%;
-            height: 80%;
-            border: 1px solid var(--magic-cyan);
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: rotate 20s linear infinite;
+        .lantern {
+            position: absolute; width: 40px; z-index: 4;
+        }
+        .l-left { bottom: 35%; left: 10%; }
+        .l-right { bottom: 35%; right: 10%; }
+
+        /* --- MAGIC CIRCLE --- */
+        .magic-platform {
+            position: absolute; bottom: 40px; left: 50%;
+            width: 320px; height: 320px; margin-left: -160px;
+            transform: rotateX(75deg); z-index: 5;
+        }
+        .circle-ring {
+            width: 100%; height: 100%; border: 3px solid var(--magic-glow);
+            border-radius: 50%; box-shadow: 0 0 30px var(--magic-glow), inset 0 0 30px var(--magic-glow);
+            animation: pulse 3s infinite ease-in-out;
         }
 
-        /* Atmospheric Fog */
-        .fog {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 30%;
-            background: linear-gradient(to top, rgba(179, 255, 255, 0.15), transparent);
-            filter: blur(30px);
-            z-index: 4;
-            pointer-events: none;
-        }
-
-        /* Animations */
-        @keyframes breathe {
-            0%, 100% { opacity: 0.4; box-shadow: 0 0 10px var(--magic-cyan); }
-            50% { opacity: 0.9; box-shadow: 0 0 40px var(--magic-cyan); }
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Subtle Sparkles */
-        .sparkle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: flicker 2s infinite;
-        }
-
-        @keyframes flicker {
-            0%, 100% { transform: scale(1); opacity: 0.2; }
-            50% { transform: scale(1.5); opacity: 0.8; }
+        /* --- ANIMATIONS --- */
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        @keyframes flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        @keyframes fall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(800px) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-<div class="scene">
+<div class="container">
     <div class="moon"></div>
+    
+    <div class="tree left"></div>
+    <div class="tree right"></div>
+    <div class="sakura-leaf" style="left: 20%; animation-delay: 1s;"></div>
+    <div class="sakura-leaf" style="left: 70%; animation-delay: 4s;"></div>
 
-    <div class="torii-container">
-        <svg viewBox="0 0 200 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M10 30 Q 100 15 190 30 L 190 45 Q 100 30 10 45 Z" fill="#4a0d0d"/>
-            <rect x="30" y="45" width="140" height="8" fill="#5a1212"/>
-            <rect x="50" y="45" width="15" height="100" fill="url(#pillarGrad)"/>
-            <rect x="135" y="45" width="15" height="100" fill="url(#pillarGrad)"/>
-            
-            <defs>
-                <linearGradient id="pillarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" style="stop-color:#3a0a0a" />
-                    <stop offset="50%" style="stop-color:#6e1a1a" />
-                    <stop offset="100%" style="stop-color:#3a0a0a" />
-                </linearGradient>
-            </defs>
+    <div class="torii">
+        <svg viewBox="0 0 200 120">
+            <path d="M10 20 Q 100 0 190 20 L 190 35 Q 100 15 10 35 Z" fill="#500"/>
+            <rect x="55" y="35" width="12" height="85" fill="#300"/>
+            <rect x="133" y="35" width="12" height="85" fill="#300"/>
+            <rect x="40" y="45" width="120" height="8" fill="#400"/>
         </svg>
     </div>
 
-    <div class="steps"></div>
+    <div class="road-container">
+        <div class="stairs"></div>
+        <div class="stone-path"></div>
+    </div>
 
-    <div class="floor-area">
-        <div class="magic-circle">
-            <div class="inner-geometry"></div>
+    <div class="lantern l-left">
+        <svg viewBox="0 0 50 80">
+            <path d="M10 10 L40 10 L45 20 L5 20 Z" fill="#222"/>
+            <rect x="10" y="20" width="30" height="35" fill="#111" stroke="#333"/>
+            <circle cx="25" cy="37" r="8" fill="#ffcc33" style="animation: flicker 0.2s infinite;">
+                <animate attributeName="r" values="7;9;7" dur="0.1s" repeatCount="indefinite" />
+            </circle>
+            <rect x="5" y="55" width="40" height="10" fill="#222"/>
+        </svg>
+    </div>
+    <div class="lantern l-right">
+        <svg viewBox="0 0 50 80">
+            <path d="M10 10 L40 10 L45 20 L5 20 Z" fill="#222"/>
+            <rect x="10" y="20" width="30" height="35" fill="#111" stroke="#333"/>
+            <circle cx="25" cy="37" r="8" fill="#ffcc33" style="animation: flicker 0.15s infinite;"/>
+            <rect x="5" y="55" width="40" height="10" fill="#222"/>
+        </svg>
+    </div>
+
+    <div class="magic-platform">
+        <div class="circle-ring">
+            <div style="position:absolute; top:10%; left:10%; width:80%; height:80%; border:1px solid var(--magic-glow); transform: rotate(45deg);"></div>
         </div>
     </div>
 
-    <div class="fog"></div>
-
-    <div class="sparkle" style="top: 20%; left: 30%;"></div>
-    <div class="sparkle" style="top: 45%; left: 80%; animation-delay: 1s;"></div>
-    <div class="sparkle" style="top: 70%; left: 15%; animation-delay: 0.5s;"></div>
+    <div style="position:absolute; bottom:0; width:100%; height:150px; background:linear-gradient(transparent, rgba(160,251,255,0.1)); filter:blur(20px); pointer-events:none;"></div>
 </div>
 
 </body>
