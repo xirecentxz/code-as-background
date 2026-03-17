@@ -3,128 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sacred Sakura Shrine - Dynamic Version</title>
+    <title>Sacred Sakura Landscape</title>
     <style>
         :root {
             --bg-deep: #050a14;
             --magic-glow: #a0fbff;
             --sakura-pink: #ffb7c5;
             --lantern-gold: #ffcc33;
-            --torii-red: #500;
+            /* Menggunakan vmin agar semua ukuran elemen bersifat relatif terhadap layar */
+            --unit: 1vmin; 
         }
 
-        body { margin: 0; background: #000; overflow: hidden; display: flex; justify-content: center; font-family: sans-serif; }
+        body { 
+            margin: 0; 
+            background: #000; 
+            overflow: hidden; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+        }
 
         .container {
             position: relative;
-            width: 100vw; height: 100vh;
-            max-width: 500px;
+            /* Rasio Landscape (misal 16:9) */
+            width: calc(100 * var(--unit) * 1.6); 
+            height: calc(100 * var(--unit));
             background: linear-gradient(to bottom, #0f172a, var(--bg-deep));
             overflow: hidden;
-            perspective: 1000px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* --- BACKGROUND & DEPTH --- */
+        /* --- ELEMENTS WITH RELATIVE UNITS --- */
+        
         .moon {
-            position: absolute; top: 12%; left: 35%; /* Asimetris */
-            width: 80px; height: 80px; 
+            position: absolute; 
+            top: 10%; left: 70%; 
+            width: calc(15 * var(--unit)); 
+            height: calc(15 * var(--unit)); 
             background: radial-gradient(circle at 30% 30%, #fff, #f0f9ff);
             border-radius: 50%;
-            box-shadow: 0 0 40px #fff, 0 0 80px rgba(160, 251, 255, 0.15);
-            z-index: 0;
+            box-shadow: 0 0 calc(5 * var(--unit)) #fff, 0 0 calc(10 * var(--unit)) rgba(160, 251, 255, 0.2);
         }
 
-        /* Efek kedalaman: Daun di depan kamera */
-        .foreground-sakura {
-            position: absolute; top: -10%; right: -5%;
-            width: 250px; height: 250px;
-            background: var(--sakura-pink);
-            clip-path: polygon(100% 0, 0 0, 100% 100%);
-            filter: blur(15px);
-            opacity: 0.2;
-            z-index: 20;
-            pointer-events: none;
-        }
-
-        .tree {
-            position: absolute; top: 0; width: 70%; height: 80%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            z-index: 1;
-        }
-        .tree.left { left: -25%; clip-path: polygon(0 0, 100% 0, 60% 100%, 0% 100%); }
-        .tree.right { right: -25%; clip-path: polygon(0 0, 100% 0, 100% 100%, 40% 100%); }
-
-        /* --- SAKURA ANIMATION --- */
-        .sakura-leaf {
-            position: absolute; background: var(--sakura-pink);
-            border-radius: 50% 0 50% 0; opacity: 0.7;
-            animation: fall-windy 12s infinite ease-in-out;
-        }
-
-        @keyframes fall-windy {
-            0% { transform: translate(0, -50px) rotate(0deg); opacity: 0; }
-            15% { opacity: 0.8; }
-            100% { transform: translate(150px, 100vh) rotate(720deg); opacity: 0; }
-        }
-
-        /* --- THE STRUCTURES --- */
         .torii {
-            position: absolute; top: 35%; left: 50%; transform: translateX(-50%);
-            width: 170px; z-index: 3;
-            filter: drop-shadow(0 0 10px rgba(160, 251, 255, 0.3)); /* Pantulan cahaya bawah */
+            position: absolute; 
+            top: 40%; left: 50%; 
+            transform: translateX(-50%);
+            width: calc(30 * var(--unit));
+            filter: drop-shadow(0 0 calc(1 * var(--unit)) rgba(160, 251, 255, 0.4));
+            z-index: 3;
         }
 
-        .stairs {
-            width: 200px; height: 160px;
-            background: repeating-linear-gradient(to bottom, #0a0a0a 0px, #111 15px, #1a1a1a 16px);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
-            margin-top: 40px;
-            box-shadow: inset 0 20px 30px rgba(160, 251, 255, 0.1);
-        }
-
+        /* Road & Stairs */
         .road-container {
-            position: absolute; bottom: 0; width: 100%; height: 55%;
+            position: absolute; 
+            bottom: 0; width: 100%; height: 50%;
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* --- MAGIC ELEMENTS --- */
-        .magic-platform {
-            position: absolute; bottom: 60px; left: 50%;
-            width: 350px; height: 350px; margin-left: -175px;
-            transform: rotateX(78deg); z-index: 5;
+        .stairs {
+            width: calc(40 * var(--unit)); 
+            height: calc(25 * var(--unit));
+            background: repeating-linear-gradient(to bottom, #0a0a0a 0px, #111 2%, #1a1a1a 2.5%);
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
         }
-        
+
+        /* Magic Platform */
+        .magic-platform {
+            position: absolute; 
+            bottom: calc(5 * var(--unit)); 
+            left: 50%;
+            width: calc(60 * var(--unit)); 
+            height: calc(60 * var(--unit)); 
+            margin-left: calc(-30 * var(--unit));
+            transform: rotateX(75deg); 
+            z-index: 5;
+        }
+
         .circle-ring {
             width: 100%; height: 100%; 
-            border: 2px solid var(--magic-glow);
+            border: calc(0.3 * var(--unit)) solid var(--magic-glow);
             border-radius: 50%; 
-            box-shadow: 0 0 40px var(--magic-glow), inset 0 0 20px var(--magic-glow);
+            box-shadow: 0 0 calc(4 * var(--unit)) var(--magic-glow), inset 0 0 calc(2 * var(--unit)) var(--magic-glow);
             animation: breathe 4s infinite ease-in-out;
         }
 
-        @keyframes breathe { 0%, 100% { opacity: 0.4; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.02); } }
-        @keyframes flicker { 0%, 100% { opacity: 1; filter: brightness(1.2); } 50% { opacity: 0.6; } }
+        /* Responsive Lanterns */
+        .lantern { 
+            position: absolute; 
+            width: calc(6 * var(--unit)); 
+            z-index: 6; 
+        }
+        .l-left { bottom: 15%; left: 20%; }
+        .l-right { bottom: 15%; right: 20%; }
 
-        .lantern { position: absolute; width: 35px; z-index: 4; filter: drop-shadow(0 0 5px var(--lantern-gold)); }
-        .l-left { bottom: 32%; left: 12%; }
-        .l-right { bottom: 32%; right: 12%; }
+        @keyframes breathe { 
+            0%, 100% { opacity: 0.4; transform: scale(0.95); } 
+            50% { opacity: 1; transform: scale(1.05); } 
+        }
+
+        /* Perbaikan: Foreground Fog agar menyatu */
+        .fog {
+            position: absolute; bottom: 0; width: 100%; height: 30%;
+            background: linear-gradient(to top, var(--bg-deep), transparent);
+            z-index: 4; pointer-events: none;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="foreground-sakura"></div>
-
     <div class="moon"></div>
+    <div class="fog"></div>
     
-    <div class="tree left"></div>
-    <div class="tree right"></div>
-    
-    <div class="sakura-leaf" style="left: 10%; width: 8px; height: 12px; animation-delay: 0s;"></div>
-    <div class="sakura-leaf" style="left: 40%; width: 10px; height: 14px; animation-delay: 4s;"></div>
-    <div class="sakura-leaf" style="left: 70%; width: 7px; height: 10px; animation-delay: 2s;"></div>
-    <div class="sakura-leaf" style="left: 90%; width: 11px; height: 15px; animation-delay: 7s;"></div>
-
     <div class="torii">
         <svg viewBox="0 0 200 120">
             <path d="M10 20 Q 100 5 190 20 L 190 35 Q 100 20 10 35 Z" fill="#600"/>
@@ -136,33 +128,28 @@
 
     <div class="road-container">
         <div class="stairs"></div>
-        <div style="width:100%; height:200px; background: radial-gradient(ellipse at 50% 0%, #111, var(--bg-deep));"></div>
+        <div style="width:100%; height:100%; background: radial-gradient(ellipse at 50% 0%, #111, var(--bg-deep));"></div>
     </div>
 
     <div class="lantern l-left">
         <svg viewBox="0 0 50 80">
+            <circle cx="25" cy="37" r="10" fill="var(--lantern-gold)" filter="blur(2px)"/>
             <path d="M5 20 L45 20 L35 10 L15 10 Z" fill="#222"/>
-            <rect x="12" y="20" width="26" height="35" fill="#111" stroke="#444"/>
-            <circle cx="25" cy="37" r="7" fill="var(--lantern-gold)" style="animation: flicker 0.3s infinite;"/>
-            <path d="M5 55 L45 55 L40 65 L10 65 Z" fill="#222"/>
+            <rect x="12" y="20" width="26" height="35" fill="none" stroke="#444" stroke-width="2"/>
         </svg>
     </div>
+
     <div class="lantern l-right">
         <svg viewBox="0 0 50 80">
+            <circle cx="25" cy="37" r="10" fill="var(--lantern-gold)" filter="blur(2px)"/>
             <path d="M5 20 L45 20 L35 10 L15 10 Z" fill="#222"/>
-            <rect x="12" y="20" width="26" height="35" fill="#111" stroke="#444"/>
-            <circle cx="25" cy="37" r="7" fill="var(--lantern-gold)" style="animation: flicker 0.4s infinite;"/>
-            <path d="M5 55 L45 55 L40 65 L10 65 Z" fill="#222"/>
+            <rect x="12" y="20" width="26" height="35" fill="none" stroke="#444" stroke-width="2"/>
         </svg>
     </div>
 
     <div class="magic-platform">
-        <div class="circle-ring">
-            <div style="position:absolute; top:15%; left:15%; width:70%; height:70%; border:1px solid var(--magic-glow); transform: rotate(45deg); opacity: 0.5;"></div>
-        </div>
+        <div class="circle-ring"></div>
     </div>
-
-    <div style="position:absolute; bottom:0; width:100%; height:20vh; background:linear-gradient(transparent, rgba(0,0,0,0.8)); pointer-events:none;"></div>
 </div>
 
 </body>
