@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layered Cyber City</title>
+    <title>Extreme Density Cyber City</title>
     <style>
         :root {
-            --sky: #020617;
+            --sky: #010409;
             --neon-pink: #ff00ff;
             --neon-blue: #00f2ff;
+            --building-dark: #050a14;
             --unit: 1vmin;
         }
 
@@ -18,75 +19,92 @@
             position: relative;
             width: calc(100 * var(--unit) * 1.6); 
             height: calc(100 * var(--unit));
-            background: linear-gradient(to bottom, var(--sky), #1e1b4b);
+            background: linear-gradient(to bottom, var(--sky), #111 60%, #1e1b4b);
             overflow: hidden;
-        }
-
-        /* --- BACKGROUND LAYER (Distant Silhouette) --- */
-        .layer-back {
-            position: absolute; bottom: 20%; width: 100%; height: 50%;
-            background: #020617;
-            clip-path: polygon(0 100%, 5% 40%, 10% 20%, 15% 45%, 25% 10%, 35% 50%, 50% 15%, 65% 45%, 80% 5%, 90% 30%, 100% 50%, 100% 100%);
-            opacity: 0.4;
-        }
-
-        /* --- MIDDLE LAYER (Massive Buildings) --- */
-        .building {
-            position: absolute; bottom: 15%;
-            background: #0f172a;
-            border-left: 1px solid rgba(0, 242, 255, 0.3);
-            box-shadow: inset 5px 0 15px rgba(0,0,0,0.5);
-        }
-
-        /* Variasi Gedung agar Bertumpuk */
-        .mid-1 { left: 5%; width: 12%; height: 45%; z-index: 2; border-top: 2px solid var(--neon-pink); }
-        .mid-2 { left: 15%; width: 18%; height: 55%; z-index: 1; filter: brightness(0.7); } /* Bertumpuk di belakang mid-1 */
-        .mid-3 { left: 40%; width: 15%; height: 65%; z-index: 2; border-top: 2px solid var(--neon-blue); }
-        .mid-4 { left: 50%; width: 20%; height: 40%; z-index: 1; filter: brightness(0.6); }
-
-        /* --- FRONT LAYER (Detailed Buildings) --- */
-        .front-b {
-            position: absolute; bottom: 10%;
-            background: #050a14;
-            border-top: 3px solid var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-            z-index: 5;
-        }
-        .f-1 { right: 10%; width: 15%; height: 35%; border-color: var(--neon-pink); }
-        .f-2 { left: 25%; width: 12%; height: 30%; }
-
-        /* Window Pattern */
-        .windows {
-            width: 100%; height: 100%;
-            background-image: radial-gradient(rgba(0, 242, 255, 0.3) 1px, transparent 1px);
-            background-size: 15% 5%;
         }
 
         /* --- ATMOSPHERE --- */
         .sun {
-            position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
-            width: 40vmin; height: 40vmin;
-            background: linear-gradient(to bottom, #f0f, transparent 80%);
+            position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+            width: 50vmin; height: 50vmin;
+            background: linear-gradient(to bottom, var(--neon-pink), transparent 90%);
             border-radius: 50%;
-            filter: blur(2px);
-            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+            filter: blur(5px);
+            opacity: 0.5;
         }
 
-        /* Grid Floor */
+        /* --- DISTANT CITY (Pseudo-element Loop) --- */
+        .city-far {
+            position: absolute; bottom: 15%; width: 100%; height: 60%;
+            opacity: 0.2;
+            filter: blur(2px);
+            background: #000;
+            /* Membuat pola siluet gedung acak */
+            clip-path: polygon(0 100%, 2% 20%, 5% 50%, 8% 10%, 12% 40%, 18% 5%, 25% 30%, 30% 10%, 38% 55%, 45% 15%, 52% 40%, 60% 5%, 68% 30%, 75% 10%, 82% 50%, 90% 15%, 95% 40%, 100% 10%, 100% 100%);
+        }
+
+        /* --- DENSE GRID CITY (The Core) --- */
+        .dense-city {
+            position: absolute; bottom: 10%; width: 100%; height: 70%;
+            display: grid;
+            /* Mengisi lebar penuh dengan gedung ukuran acak */
+            grid-template-columns: repeat(auto-fill, minmax(calc(4 * var(--unit)), 1fr));
+            gap: calc(1 * var(--unit));
+            padding: 0 calc(5 * var(--unit));
+            box-sizing: border-box;
+            z-index: 5;
+        }
+
+        /* Styling Gedung Dasar */
+        .b-dense {
+            position: relative;
+            background: var(--building-dark);
+            border-top: 1px solid var(--neon-blue);
+            box-shadow: inset 0 20px 30px rgba(0,0,0,0.7);
+            /* Variasi tinggi acak */
+            height: calc(30vmin + (20vmin * random())); 
+        }
+
+        /* Variasi Warna Neon (Pink/Blue) */
+        .b-dense:nth-child(3n) { border-top-color: var(--neon-pink); }
+        
+        /* Pola Jendela */
+        .windows {
+            position: absolute; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(0, 242, 255, 0.2) 1px, transparent 1px);
+            background-size: 20% 5%;
+        }
+
+        /* --- Bertumpuk (Pseudo-elements) --- */
+        /* Membuat gedung tambahan di belakang */
+        .b-dense::before {
+            content: ''; position: absolute; bottom: -5%; left: -30%; width: 100%; height: 110%;
+            background: #020617; z-index: -1;
+            border-top: 1px solid rgba(255, 0, 255, 0.1);
+        }
+
+        /* Membuat gedung tambahan di depan */
+        .b-dense::after {
+            content: ''; position: absolute; bottom: -10%; right: -20%; width: 80%; height: 90%;
+            background: #010409; z-index: 1;
+            border-top: 1px solid rgba(0, 242, 255, 0.1);
+        }
+
+        /* --- GROUND --- */
         .ground {
             position: absolute; bottom: 0; width: 100%; height: 20%;
-            background: #000; perspective: 150px; z-index: 10;
+            background: #000; perspective: 200px; z-index: 10;
         }
         .grid {
             width: 200%; height: 200%; margin-left: -50%;
             background-image: linear-gradient(var(--neon-blue) 1px, transparent 1px), linear-gradient(90deg, var(--neon-blue) 1px, transparent 1px);
-            background-size: 40px 40px; transform: rotateX(60deg);
-            opacity: 0.15; animation: drive 2s infinite linear;
+            background-size: 5vmin 5vmin; transform: rotateX(65deg);
+            opacity: 0.1; animation: drive 1.5s infinite linear;
         }
 
         @keyframes drive {
-            from { transform: rotateX(60deg) translateY(0); }
-            to { transform: rotateX(60deg) translateY(40px); }
+            from { transform: rotateX(65deg) translateY(0); }
+            to { transform: rotateX(65deg) translateY(5vmin); }
         }
     </style>
 </head>
@@ -94,15 +112,26 @@
 
 <div class="container">
     <div class="sun"></div>
-    <div class="layer-back"></div>
+    <div class="city-far"></div>
 
-    <div class="building mid-2"><div class="windows"></div></div>
-    <div class="building mid-1"><div class="windows"></div></div>
-    <div class="building mid-4"><div class="windows"></div></div>
-    <div class="building mid-3"><div class="windows"></div></div>
-
-    <div class="front-b f-1"><div class="windows"></div></div>
-    <div class="front-b f-2"><div class="windows"></div></div>
+    <div class="dense-city">
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+        <div class="b-dense"><div class="windows"></div></div>
+    </div>
 
     <div class="ground"><div class="grid"></div></div>
 </div>
