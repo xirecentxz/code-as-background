@@ -3,116 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyberpunk Cityscape</title>
+    <title>Layered Cyber City</title>
     <style>
         :root {
-            --sky-dark: #020617;
+            --sky: #020617;
             --neon-pink: #ff00ff;
             --neon-blue: #00f2ff;
-            --building-black: #0f172a;
             --unit: 1vmin;
         }
 
-        body { 
-            margin: 0; background: #000; overflow: hidden; 
-            display: flex; justify-content: center; align-items: center; height: 100vh;
-        }
+        body { margin: 0; background: #000; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
 
         .container {
             position: relative;
             width: calc(100 * var(--unit) * 1.6); 
             height: calc(100 * var(--unit));
-            background: linear-gradient(to bottom, var(--sky-dark), #1e1b4b);
+            background: linear-gradient(to bottom, var(--sky), #1e1b4b);
             overflow: hidden;
         }
 
-        /* --- BACKGROUND BUILDINGS (Silhouette) --- */
-        .city-far {
-            position: absolute; bottom: 20%; width: 100%; height: 40%;
+        /* --- BACKGROUND LAYER (Distant Silhouette) --- */
+        .layer-back {
+            position: absolute; bottom: 20%; width: 100%; height: 50%;
             background: #020617;
-            clip-path: polygon(0% 100%, 0% 40%, 10% 20%, 20% 45%, 30% 10%, 45% 50%, 60% 5%, 75% 40%, 90% 15%, 100% 40%, 100% 100%);
-            opacity: 0.5;
+            clip-path: polygon(0 100%, 5% 40%, 10% 20%, 15% 45%, 25% 10%, 35% 50%, 50% 15%, 65% 45%, 80% 5%, 90% 30%, 100% 50%, 100% 100%);
+            opacity: 0.4;
         }
 
-        /* --- NEON BUILDINGS --- */
+        /* --- MIDDLE LAYER (Massive Buildings) --- */
         .building {
-            position: absolute; bottom: 15%; background: var(--building-black);
-            border-top: 2px solid var(--neon-blue);
-            box-shadow: 0 0 calc(2 * var(--unit)) var(--neon-blue);
+            position: absolute; bottom: 15%;
+            background: #0f172a;
+            border-left: 1px solid rgba(0, 242, 255, 0.3);
+            box-shadow: inset 5px 0 15px rgba(0,0,0,0.5);
         }
 
-        .b1 { left: 10%; width: calc(15 * var(--unit)); height: calc(40 * var(--unit)); border-color: var(--neon-pink); box-shadow: 0 0 calc(2 * var(--unit)) var(--neon-pink); }
-        .b2 { left: 30%; width: calc(20 * var(--unit)); height: calc(55 * var(--unit)); }
-        .b3 { left: 60%; width: calc(12 * var(--unit)); height: calc(45 * var(--unit)); border-color: var(--neon-pink); box-shadow: 0 0 calc(2 * var(--unit)) var(--neon-pink); }
-        .b4 { right: 5%; width: calc(18 * var(--unit)); height: calc(35 * var(--unit)); }
+        /* Variasi Gedung agar Bertumpuk */
+        .mid-1 { left: 5%; width: 12%; height: 45%; z-index: 2; border-top: 2px solid var(--neon-pink); }
+        .mid-2 { left: 15%; width: 18%; height: 55%; z-index: 1; filter: brightness(0.7); } /* Bertumpuk di belakang mid-1 */
+        .mid-3 { left: 40%; width: 15%; height: 65%; z-index: 2; border-top: 2px solid var(--neon-blue); }
+        .mid-4 { left: 50%; width: 20%; height: 40%; z-index: 1; filter: brightness(0.6); }
 
-        /* --- WINDOWS (Random Glow) --- */
+        /* --- FRONT LAYER (Detailed Buildings) --- */
+        .front-b {
+            position: absolute; bottom: 10%;
+            background: #050a14;
+            border-top: 3px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            z-index: 5;
+        }
+        .f-1 { right: 10%; width: 15%; height: 35%; border-color: var(--neon-pink); }
+        .f-2 { left: 25%; width: 12%; height: 30%; }
+
+        /* Window Pattern */
         .windows {
             width: 100%; height: 100%;
-            background-image: radial-gradient(var(--neon-blue) 1px, transparent 1px);
-            background-size: calc(3 * var(--unit)) calc(5 * var(--unit));
-            opacity: 0.3;
+            background-image: radial-gradient(rgba(0, 242, 255, 0.3) 1px, transparent 1px);
+            background-size: 15% 5%;
         }
 
-        /* --- CYBER ROAD / GRID --- */
-        .road-perspective {
-            position: absolute; bottom: 0; width: 100%; height: 25%;
-            background: #000;
-            perspective: 100px;
-        }
-
-        .grid {
-            width: 200%; height: 200%;
-            margin-left: -50%;
-            background-image: 
-                linear-gradient(to right, var(--neon-blue) 1px, transparent 1px),
-                linear-gradient(to bottom, var(--neon-blue) 1px, transparent 1px);
-            background-size: calc(10 * var(--unit)) calc(10 * var(--unit));
-            transform: rotateX(60deg);
-            opacity: 0.2;
-            animation: moveGrid 2s infinite linear;
-        }
-
-        @keyframes moveGrid {
-            0% { transform: rotateX(60deg) translateY(0); }
-            100% { transform: rotateX(60deg) translateY(calc(10 * var(--unit))); }
-        }
-
-        /* --- ATMOSPHERIC ELEMENTS --- */
-        .sun-retro {
-            position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
-            width: calc(40 * var(--unit)); height: calc(40 * var(--unit));
-            background: linear-gradient(to bottom, var(--neon-pink), transparent);
+        /* --- ATMOSPHERE --- */
+        .sun {
+            position: absolute; top: 15%; left: 50%; transform: translateX(-50%);
+            width: 40vmin; height: 40vmin;
+            background: linear-gradient(to bottom, #f0f, transparent 80%);
             border-radius: 50%;
-            opacity: 0.6;
-            filter: blur(5px);
+            filter: blur(2px);
+            mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
         }
 
-        .scanline {
-            position: absolute; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.1) 50%);
-            background-size: 100% 4px;
-            z-index: 10;
-            pointer-events: none;
+        /* Grid Floor */
+        .ground {
+            position: absolute; bottom: 0; width: 100%; height: 20%;
+            background: #000; perspective: 150px; z-index: 10;
+        }
+        .grid {
+            width: 200%; height: 200%; margin-left: -50%;
+            background-image: linear-gradient(var(--neon-blue) 1px, transparent 1px), linear-gradient(90deg, var(--neon-blue) 1px, transparent 1px);
+            background-size: 40px 40px; transform: rotateX(60deg);
+            opacity: 0.15; animation: drive 2s infinite linear;
+        }
+
+        @keyframes drive {
+            from { transform: rotateX(60deg) translateY(0); }
+            to { transform: rotateX(60deg) translateY(40px); }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="scanline"></div>
-    <div class="sun-retro"></div>
-    <div class="city-far"></div>
+    <div class="sun"></div>
+    <div class="layer-back"></div>
 
-    <div class="building b1"><div class="windows"></div></div>
-    <div class="building b2"><div class="windows"></div></div>
-    <div class="building b3"><div class="windows"></div></div>
-    <div class="building b4"><div class="windows"></div></div>
+    <div class="building mid-2"><div class="windows"></div></div>
+    <div class="building mid-1"><div class="windows"></div></div>
+    <div class="building mid-4"><div class="windows"></div></div>
+    <div class="building mid-3"><div class="windows"></div></div>
 
-    <div class="road-perspective">
-        <div class="grid"></div>
-        <div style="position:absolute; top:0; width:100%; height:100%; background: linear-gradient(to bottom, var(--neon-blue), transparent); opacity: 0.1;"></div>
-    </div>
+    <div class="front-b f-1"><div class="windows"></div></div>
+    <div class="front-b f-2"><div class="windows"></div></div>
+
+    <div class="ground"><div class="grid"></div></div>
 </div>
 
 </body>
