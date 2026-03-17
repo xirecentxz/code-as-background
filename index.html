@@ -3,152 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sacred Sakura Landscape</title>
+    <title>Cyberpunk Cityscape</title>
     <style>
         :root {
-            --bg-deep: #050a14;
-            --magic-glow: #a0fbff;
-            --sakura-pink: #ffb7c5;
-            --lantern-gold: #ffcc33;
-            /* Menggunakan vmin agar semua ukuran elemen bersifat relatif terhadap layar */
-            --unit: 1vmin; 
+            --sky-dark: #020617;
+            --neon-pink: #ff00ff;
+            --neon-blue: #00f2ff;
+            --building-black: #0f172a;
+            --unit: 1vmin;
         }
 
         body { 
-            margin: 0; 
-            background: #000; 
-            overflow: hidden; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh;
+            margin: 0; background: #000; overflow: hidden; 
+            display: flex; justify-content: center; align-items: center; height: 100vh;
         }
 
         .container {
             position: relative;
-            /* Rasio Landscape (misal 16:9) */
             width: calc(100 * var(--unit) * 1.6); 
             height: calc(100 * var(--unit));
-            background: linear-gradient(to bottom, #0f172a, var(--bg-deep));
+            background: linear-gradient(to bottom, var(--sky-dark), #1e1b4b);
             overflow: hidden;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
         }
 
-        /* --- ELEMENTS WITH RELATIVE UNITS --- */
-        
-        .moon {
-            position: absolute; 
-            top: 10%; left: 70%; 
-            width: calc(15 * var(--unit)); 
-            height: calc(15 * var(--unit)); 
-            background: radial-gradient(circle at 30% 30%, #fff, #f0f9ff);
+        /* --- BACKGROUND BUILDINGS (Silhouette) --- */
+        .city-far {
+            position: absolute; bottom: 20%; width: 100%; height: 40%;
+            background: #020617;
+            clip-path: polygon(0% 100%, 0% 40%, 10% 20%, 20% 45%, 30% 10%, 45% 50%, 60% 5%, 75% 40%, 90% 15%, 100% 40%, 100% 100%);
+            opacity: 0.5;
+        }
+
+        /* --- NEON BUILDINGS --- */
+        .building {
+            position: absolute; bottom: 15%; background: var(--building-black);
+            border-top: 2px solid var(--neon-blue);
+            box-shadow: 0 0 calc(2 * var(--unit)) var(--neon-blue);
+        }
+
+        .b1 { left: 10%; width: calc(15 * var(--unit)); height: calc(40 * var(--unit)); border-color: var(--neon-pink); box-shadow: 0 0 calc(2 * var(--unit)) var(--neon-pink); }
+        .b2 { left: 30%; width: calc(20 * var(--unit)); height: calc(55 * var(--unit)); }
+        .b3 { left: 60%; width: calc(12 * var(--unit)); height: calc(45 * var(--unit)); border-color: var(--neon-pink); box-shadow: 0 0 calc(2 * var(--unit)) var(--neon-pink); }
+        .b4 { right: 5%; width: calc(18 * var(--unit)); height: calc(35 * var(--unit)); }
+
+        /* --- WINDOWS (Random Glow) --- */
+        .windows {
+            width: 100%; height: 100%;
+            background-image: radial-gradient(var(--neon-blue) 1px, transparent 1px);
+            background-size: calc(3 * var(--unit)) calc(5 * var(--unit));
+            opacity: 0.3;
+        }
+
+        /* --- CYBER ROAD / GRID --- */
+        .road-perspective {
+            position: absolute; bottom: 0; width: 100%; height: 25%;
+            background: #000;
+            perspective: 100px;
+        }
+
+        .grid {
+            width: 200%; height: 200%;
+            margin-left: -50%;
+            background-image: 
+                linear-gradient(to right, var(--neon-blue) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--neon-blue) 1px, transparent 1px);
+            background-size: calc(10 * var(--unit)) calc(10 * var(--unit));
+            transform: rotateX(60deg);
+            opacity: 0.2;
+            animation: moveGrid 2s infinite linear;
+        }
+
+        @keyframes moveGrid {
+            0% { transform: rotateX(60deg) translateY(0); }
+            100% { transform: rotateX(60deg) translateY(calc(10 * var(--unit))); }
+        }
+
+        /* --- ATMOSPHERIC ELEMENTS --- */
+        .sun-retro {
+            position: absolute; top: 10%; left: 50%; transform: translateX(-50%);
+            width: calc(40 * var(--unit)); height: calc(40 * var(--unit));
+            background: linear-gradient(to bottom, var(--neon-pink), transparent);
             border-radius: 50%;
-            box-shadow: 0 0 calc(5 * var(--unit)) #fff, 0 0 calc(10 * var(--unit)) rgba(160, 251, 255, 0.2);
+            opacity: 0.6;
+            filter: blur(5px);
         }
 
-        .torii {
-            position: absolute; 
-            top: 40%; left: 50%; 
-            transform: translateX(-50%);
-            width: calc(30 * var(--unit));
-            filter: drop-shadow(0 0 calc(1 * var(--unit)) rgba(160, 251, 255, 0.4));
-            z-index: 3;
-        }
-
-        /* Road & Stairs */
-        .road-container {
-            position: absolute; 
-            bottom: 0; width: 100%; height: 50%;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        .stairs {
-            width: calc(40 * var(--unit)); 
-            height: calc(25 * var(--unit));
-            background: repeating-linear-gradient(to bottom, #0a0a0a 0px, #111 2%, #1a1a1a 2.5%);
-            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-        }
-
-        /* Magic Platform */
-        .magic-platform {
-            position: absolute; 
-            bottom: calc(5 * var(--unit)); 
-            left: 50%;
-            width: calc(60 * var(--unit)); 
-            height: calc(60 * var(--unit)); 
-            margin-left: calc(-30 * var(--unit));
-            transform: rotateX(75deg); 
-            z-index: 5;
-        }
-
-        .circle-ring {
-            width: 100%; height: 100%; 
-            border: calc(0.3 * var(--unit)) solid var(--magic-glow);
-            border-radius: 50%; 
-            box-shadow: 0 0 calc(4 * var(--unit)) var(--magic-glow), inset 0 0 calc(2 * var(--unit)) var(--magic-glow);
-            animation: breathe 4s infinite ease-in-out;
-        }
-
-        /* Responsive Lanterns */
-        .lantern { 
-            position: absolute; 
-            width: calc(6 * var(--unit)); 
-            z-index: 6; 
-        }
-        .l-left { bottom: 15%; left: 20%; }
-        .l-right { bottom: 15%; right: 20%; }
-
-        @keyframes breathe { 
-            0%, 100% { opacity: 0.4; transform: scale(0.95); } 
-            50% { opacity: 1; transform: scale(1.05); } 
-        }
-
-        /* Perbaikan: Foreground Fog agar menyatu */
-        .fog {
-            position: absolute; bottom: 0; width: 100%; height: 30%;
-            background: linear-gradient(to top, var(--bg-deep), transparent);
-            z-index: 4; pointer-events: none;
+        .scanline {
+            position: absolute; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 10;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="moon"></div>
-    <div class="fog"></div>
-    
-    <div class="torii">
-        <svg viewBox="0 0 200 120">
-            <path d="M10 20 Q 100 5 190 20 L 190 35 Q 100 20 10 35 Z" fill="#600"/>
-            <rect x="55" y="35" width="14" height="85" fill="#200"/>
-            <rect x="131" y="35" width="14" height="85" fill="#200"/>
-            <rect x="40" y="48" width="120" height="10" fill="#400"/>
-        </svg>
-    </div>
+    <div class="scanline"></div>
+    <div class="sun-retro"></div>
+    <div class="city-far"></div>
 
-    <div class="road-container">
-        <div class="stairs"></div>
-        <div style="width:100%; height:100%; background: radial-gradient(ellipse at 50% 0%, #111, var(--bg-deep));"></div>
-    </div>
+    <div class="building b1"><div class="windows"></div></div>
+    <div class="building b2"><div class="windows"></div></div>
+    <div class="building b3"><div class="windows"></div></div>
+    <div class="building b4"><div class="windows"></div></div>
 
-    <div class="lantern l-left">
-        <svg viewBox="0 0 50 80">
-            <circle cx="25" cy="37" r="10" fill="var(--lantern-gold)" filter="blur(2px)"/>
-            <path d="M5 20 L45 20 L35 10 L15 10 Z" fill="#222"/>
-            <rect x="12" y="20" width="26" height="35" fill="none" stroke="#444" stroke-width="2"/>
-        </svg>
-    </div>
-
-    <div class="lantern l-right">
-        <svg viewBox="0 0 50 80">
-            <circle cx="25" cy="37" r="10" fill="var(--lantern-gold)" filter="blur(2px)"/>
-            <path d="M5 20 L45 20 L35 10 L15 10 Z" fill="#222"/>
-            <rect x="12" y="20" width="26" height="35" fill="none" stroke="#444" stroke-width="2"/>
-        </svg>
-    </div>
-
-    <div class="magic-platform">
-        <div class="circle-ring"></div>
+    <div class="road-perspective">
+        <div class="grid"></div>
+        <div style="position:absolute; top:0; width:100%; height:100%; background: linear-gradient(to bottom, var(--neon-blue), transparent); opacity: 0.1;"></div>
     </div>
 </div>
 
